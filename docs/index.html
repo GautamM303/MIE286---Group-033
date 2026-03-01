@@ -118,13 +118,13 @@
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────────────────
 // Paste your deployed Google Apps Script URL here after setup:
-const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzk35u-7ByznrNMvB0wMcRQ8Beyb9S2SQ_cy2L4t4JmC10xeMSufJRRcJHfJXbtVL8/exec";
 
 // ─── PROBLEMS ──────────────────────────────────────────────────────────────
 const PROBLEMS = [
   {
     id:"P01",
-    text:"A bat and a ball together cost $1.10. The bat costs $1.00 more than the ball. How much does the ball cost? (Answer in cents — e.g. enter 100 for 100 cents)",
+    text:"A bat and a ball together cost $1.10. The bat costs $1.00 more than the ball. How much does the ball cost? (Answer in cents — e.g. enter 5 for 5 cents)",
     answer:5,
     textFeedback:"Let the ball cost x cents. The bat costs x+100. Together: x+(x+100)=110 → 2x=10 → x=5 cents. The intuitive answer of 10¢ is wrong — that would make the bat $1.10 and total $1.20.",
     diagramData:{type:"bat-ball",ball:5,bat:105}
@@ -383,20 +383,22 @@ function showResults(){
 
 async function saveToGoogleSheets(){
   const msg=document.getElementById('saving-msg');
-  if(!APPS_SCRIPT_URL||APPS_SCRIPT_URL==="https://script.google.com/macros/s/AKfycbwmpsUKivB5d72S9VgTiToN7pu3PSwzaPKHUAGhdUrRmWVTs22qrwIqWTYwwUGJRzY/exec"){
-    msg.textContent='⚠️ Google Sheets URL not configured — results not saved remotely.';
-    msg.className='saving-msg error';
-    return;
-  }
   msg.textContent='Saving your results to the database…';
   msg.className='saving-msg';
   try{
     const payload={
-      participantId:pid,   
+      participantId:pid,
       timestamp:new Date().toISOString(),
       trials:results.map(r=>({...r,correctAnswer:String(r.correctAnswer)}))
     };
-    await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    // mode: 'no-cors' is required for Apps Script from external origins.
+    // We won't get a readable response back, but the data still saves.
+    await fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(payload)
+    });
     msg.textContent='✅ Results saved successfully. Thank you!';
     msg.className='saving-msg success';
   } catch(e){
