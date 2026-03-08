@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytical Reasoning Study | MIE 286</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter','Segoe UI',sans-serif; min-height:100vh; background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); color:#e2e8f0; }
+  .screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+  .screen.active { display:flex; }
+  .card { background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:40px; max-width:720px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.4); }
+  .logo { display:inline-block; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:6px 14px; border-radius:99px; margin-bottom:18px; }
+  h1 { font-size:2rem; font-weight:800; margin-bottom:8px; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  h2 { font-size:1.15rem; font-weight:600; margin-bottom:14px; color:#cbd5e0; }
+  p  { color:#94a3b8; line-height:1.75; margin-bottom:12px; font-size:0.95rem; }
+  label { display:block; font-weight:600; font-size:0.9rem; color:#cbd5e0; margin-bottom:8px; }
+  input[type="text"] { width:100%; padding:12px 16px; background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.15); border-radius:10px; font-size:1rem; color:#e2e8f0; margin-bottom:18px; transition:border-color .2s,background .2s; font-family:inherit; }
+  input[type="text"]::placeholder { color:#64748b; }
+  input[type="text"]:focus { outline:none; border-color:#7c3aed; background:rgba(124,58,237,.1); }
+  .btn { display:block; width:100%; padding:14px 28px; border-radius:12px; border:none; font-size:1rem; font-weight:700; cursor:pointer; transition:all .2s; margin-bottom:10px; font-family:inherit; letter-spacing:.3px; }
+  .btn-purple { background:linear-gradient(135deg,#7c3aed,#4f46e5); color:#fff; box-shadow:0 4px 20px rgba(124,58,237,.4); }
+  .btn-purple:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(124,58,237,.5); }
+  .btn-green  { background:linear-gradient(135deg,#059669,#10b981); color:#fff; box-shadow:0 4px 20px rgba(16,185,129,.4); }
+  .btn-green:hover  { transform:translateY(-2px); box-shadow:0 8px 25px rgba(16,185,129,.5); }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0; }
+  .info-box { background:rgba(255,255,255,.05); border-radius:12px; padding:16px; text-align:center; border:1px solid rgba(255,255,255,.08); }
+  .info-box .ico { font-size:1.6rem; margin-bottom:6px; }
+  .info-box .lbl { font-size:.8rem; color:#94a3b8; }
+  .info-box .val { font-size:.95rem; font-weight:700; color:#e2e8f0; }
+  .trial-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .trial-label  { font-size:.85rem; font-weight:600; color:#94a3b8; }
+  .timer-display { font-size:.85rem; font-weight:600; color:#a78bfa; background:rgba(167,139,250,.1); padding:4px 12px; border-radius:99px; }
+  .progress-bar { width:100%; height:6px; background:rgba(255,255,255,.1); border-radius:99px; margin-bottom:24px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#7c3aed,#60a5fa); border-radius:99px; transition:width .5s ease; }
+  .problem-box { background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.3); border-left:4px solid #6366f1; border-radius:12px; padding:22px; margin-bottom:22px; font-size:1rem; line-height:1.8; color:#e2e8f0; }
+  .answer-row { display:flex; gap:10px; align-items:center; }
+  .answer-row input { margin-bottom:0; flex:1; }
+  .answer-row .btn { width:auto; margin-bottom:0; white-space:nowrap; padding:12px 24px; }
+  .feedback-badge { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:700; letter-spacing:.5px; padding:5px 14px; border-radius:99px; margin-bottom:16px; }
+  .badge-diagram { background:rgba(96,165,250,.15); color:#60a5fa; border:1px solid rgba(96,165,250,.3); }
+  .badge-text    { background:rgba(167,139,250,.15); color:#a78bfa; border:1px solid rgba(167,139,250,.3); }
+  .result-banner { border-radius:12px; padding:18px 22px; margin-bottom:20px; display:flex; align-items:center; gap:14px; }
+  .banner-correct { background:rgba(16,185,129,.15); border:1px solid rgba(16,185,129,.35); }
+  .banner-wrong   { background:rgba(239,68,68,.15);  border:1px solid rgba(239,68,68,.35); }
+  .banner-icon  { font-size:2rem; }
+  .banner-title { font-weight:700; font-size:1.05rem; }
+  .banner-correct .banner-title { color:#10b981; }
+  .banner-wrong   .banner-title { color:#ef4444; }
+  .banner-sub { font-size:.85rem; color:#94a3b8; margin-top:2px; }
+  .explanation-box { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:18px; margin-bottom:20px; font-size:.92rem; line-height:1.75; color:#cbd5e0; }
+  .explanation-box strong { color:#e2e8f0; }
+  .diagram-container { background:rgba(255,255,255,.04); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:18px; margin-bottom:20px; }
+  .diagram-container svg { width:100%; height:auto; display:block; }
+  .results-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:22px 0; }
+  .result-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:20px; text-align:center; }
+  .result-card .val { font-size:2.2rem; font-weight:800; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .result-card .lbl { font-size:.8rem; color:#64748b; margin-top:4px; font-weight:500; }
+  table { width:100%; border-collapse:collapse; margin-top:16px; font-size:.82rem; }
+  th { background:rgba(255,255,255,.07); padding:10px 12px; text-align:left; font-weight:600; color:#94a3b8; font-size:.78rem; text-transform:uppercase; letter-spacing:.5px; }
+  td { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); color:#cbd5e0; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,.03); }
+  .cell-correct { color:#10b981; font-weight:700; }
+  .cell-wrong   { color:#ef4444;  font-weight:700; }
+  .pill { display:inline-block; padding:2px 10px; border-radius:99px; font-size:.75rem; font-weight:600; }
+  .pill-diagram { background:rgba(96,165,250,.15); color:#60a5fa; }
+  .pill-text    { background:rgba(167,139,250,.15); color:#a78bfa; }
+  .saving-msg { font-size:.85rem; text-align:center; margin-bottom:14px; min-height:22px; color:#94a3b8; }
+  .saving-msg.success { color:#10b981; }
+  .saving-msg.error   { color:#ef4444; }
+  .divider { height:1px; background:rgba(255,255,255,.08); margin:20px 0; }
+
+  /* ── INFOGRAPHIC DIAGRAM STYLES ─────────────────────────── */
+  .dg-card {
+    border-radius: 18px;
+    padding: 0;
+    margin-bottom: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .dg-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .dg-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .dg-title { font-size: 0.95rem; font-weight: 800; color: #f1f5f9; line-height: 1.2; }
+  .dg-subtitle { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 2px; line-height: 1.4; }
+  .dg-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .dg-note {
+    font-size: 0.76rem; font-weight: 600;
+    padding: 8px 13px; border-radius: 8px;
+    border-left: 3px solid;
+    line-height: 1.5;
+  }
+  .dg-note-warn  { background: rgba(251,191,36,0.1);  border-color: #fbbf24; color: #fde68a; }
+  .dg-note-right { background: rgba(16,185,129,0.1);  border-color: #10b981; color: #6ee7b7; }
+
+  /* ── BAT-BALL bars ── */
+  .dg-cost-bars { display: flex; flex-direction: column; gap: 8px; }
+  .dg-cost-row { display: flex; align-items: center; gap: 10px; }
+  .dg-cost-lbl { font-size: 0.8rem; font-weight: 700; width: 56px; flex-shrink: 0; }
+  .dg-cost-track { flex: 1; height: 28px; background: rgba(255,255,255,0.07); border-radius: 6px; position: relative; overflow: visible; }
+  .dg-cost-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; }
+  .dg-cost-fill span { font-size: 0.78rem; font-weight: 800; color: #fff; white-space: nowrap; }
+  .dg-cost-fill-out { position: absolute; right: -42px; top: 50%; transform: translateY(-50%); font-size: 0.78rem; font-weight: 800; }
+  .dg-sum-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .dg-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 99px; font-size: 0.76rem; font-weight: 700; border: 1px solid; }
+
+  /* ── MACHINES parallel grid ── */
+  .dg-par-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .dg-par-card { border-radius: 12px; padding: 12px 8px; text-align: center; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 5px; }
+  .dg-par-emoji { font-size: 1.5rem; }
+  .dg-par-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: rgba(255,255,255,0.5); }
+  .dg-par-time { font-size: 1rem; font-weight: 900; margin-top: 2px; }
+  .dg-par-widgets { font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.45); }
+
+  /* ── LILY timeline ── */
+  .dg-lily-track { display: flex; align-items: stretch; gap: 0; border-radius: 10px; overflow: hidden; height: 54px; }
+  .dg-lily-seg { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .dg-lily-seg-lbl { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; }
+  .dg-lily-seg-val { font-size: 0.85rem; font-weight: 900; }
+  .dg-lily-mid { display: flex; align-items: center; justify-content: center; padding: 0 8px; background: rgba(0,0,0,0.3); }
+  .dg-lily-mid span { font-size: 0.9rem; font-weight: 900; color: #60a5fa; }
+  .dg-lily-extra { display: flex; gap: 10px; }
+  .dg-lily-fact { flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; line-height: 1.45; }
+
+  /* ── RACE before/after ── */
+  .dg-race-panels { display: grid; grid-template-columns: 1fr 32px 1fr; gap: 6px; align-items: center; }
+  .dg-race-panel { border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+  .dg-race-head { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.4); }
+  .dg-race-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; font-weight: 600; }
+  .dg-race-row:last-child { border-bottom: none; }
+  .dg-race-pos { font-size: 0.65rem; font-weight: 900; width: 22px; text-align: center; opacity: 0.6; }
+  .dg-race-arrow-mid { text-align: center; font-size: 1.4rem; color: #334155; }
+
+  /* ── SHEEP emoji grid ── */
+  .dg-flock { display: flex; flex-wrap: wrap; gap: 5px; }
+  .dg-flock-sheep { width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; border: 1.5px solid; }
+  .dg-sheep-ok   { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); }
+  .dg-sheep-gone { background: rgba(239,68,68,0.1);   border-color: rgba(239,68,68,0.3); opacity: 0.55; filter: grayscale(0.5); }
+  .dg-flock-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+  .dg-fl-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; }
+  .dg-fl-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ── SNAIL well + table ── */
+  .dg-snail-wrap { display: grid; grid-template-columns: 68px 1fr; gap: 14px; align-items: start; }
+  .dg-well-outer { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .dg-well-cap { font-size: 0.68rem; font-weight: 800; }
+  .dg-well-tube { position: relative; width: 34px; height: 120px; border: 2px solid rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; background: rgba(0,0,0,0.3); }
+  .dg-well-water { position: absolute; bottom: 0; left: 0; right: 0; height: 91.7%; }
+  .dg-well-line { position: absolute; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.2); }
+  .dg-well-snail-emoji { position: absolute; left: 50%; transform: translateX(-50%); font-size: 1rem; }
+  .dg-well-floor { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-weight: 600; }
+  .dg-sn-table { font-size: 0.76rem; display: flex; flex-direction: column; gap: 2px; }
+  .dg-sn-hd { display: flex; justify-content: space-between; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.3); padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2px; }
+  .dg-sn-row { display: flex; justify-content: space-between; padding: 2px 0; color: rgba(255,255,255,0.4); }
+  .dg-sn-hl { background: linear-gradient(90deg,rgba(16,185,129,0.2),transparent); border-radius: 5px; padding: 4px 6px; color: #6ee7b7; font-weight: 800; }
+
+  /* ── SYLLOGISM venn ── */
+  .dg-venn-wrap svg { width: 100%; height: auto; display: block; }
+  .dg-venn-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .dg-vl-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; }
+  .dg-vl-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; }
+</style>
+</head>
+<body>
+
+<!-- ── SCREEN 1: Intro ── -->
+<div class="screen active" id="screen-intro">
+  <div class="card">
+    <div class="logo">MIE 286 · Group 033 · University of Toronto</div>
+    <h1>Analytical Reasoning Study</h1>
+    <p>We're studying how different types of feedback affect problem-solving. You'll solve <strong style="color:#e2e8f0">3 math word problems</strong> and receive feedback after each one.</p>
+    <div class="info-grid">
+      <div class="info-box"><div class="ico">🧩</div><div class="val">3</div><div class="lbl">Problems / Session</div></div>
+      <div class="info-box"><div class="ico">⏱</div><div class="val">3–5 min</div><div class="lbl">Est. Duration</div></div>
+      <div class="info-box"><div class="ico">🔒</div><div class="val">Anonymous</div><div class="lbl">Data Collection</div></div>
+    </div>
+    <p>Please complete this <strong style="color:#e2e8f0">independently</strong> without any external help. Your answers and response times are recorded for research purposes only.</p>
+    <div class="divider"></div>
+    <label>Participant ID <span style="font-weight:400;color:#64748b;">(e.g. your student number)</span></label>
+    <input type="text" id="participant-id" placeholder="Enter your ID…">
+    <button class="btn btn-purple" onclick="startExperiment()">Begin Study →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 2: Trial ── -->
+<div class="screen" id="screen-trial">
+  <div class="card">
+    <div class="trial-header">
+      <span class="trial-label"  id="trial-label">Trial 1 of 3</span>
+      <span class="timer-display" id="timer-display">⏱ 0.0s</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="problem-box" id="problem-text"></div>
+    <div class="answer-row">
+      <input type="text" id="answer-input" placeholder="Your answer…" onkeydown="if(event.key==='Enter')submitAnswer()">
+      <button class="btn btn-purple" onclick="submitAnswer()">Submit →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 3: Feedback ── -->
+<div class="screen" id="screen-feedback">
+  <div class="card">
+    <div id="feedback-badge"></div>
+    <div id="result-banner"></div>
+    <div id="feedback-content"></div>
+    <button class="btn btn-purple" onclick="nextTrial()">Continue →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 4: Results ── -->
+<div class="screen" id="screen-results">
+  <div class="card">
+    <div class="logo">Study Complete</div>
+    <h1>Great work! 🎉</h1>
+    <p>Thank you for participating. Here's your session summary.</p>
+    <div class="saving-msg" id="saving-msg"></div>
+    <div class="results-grid">
+      <div class="result-card"><div class="val" id="res-correct">—</div><div class="lbl">Correct out of 3</div></div>
+      <div class="result-card"><div class="val" id="res-avg-time">—</div><div class="lbl">Avg. Response Time</div></div>
+      <div class="result-card"><div class="val" id="res-set">—</div><div class="lbl">Question Set</div></div>
+      <div class="result-card"><div class="val" id="res-pid">—</div><div class="lbl">Participant ID</div></div>
+    </div>
+    <div class="divider"></div>
+    <h2>Trial Breakdown</h2>
+    <table>
+      <thead><tr><th>#</th><th>Problem</th><th>Your Answer</th><th>Correct</th><th>Time (s)</th><th>Feedback</th><th>Abs. Error</th></tr></thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+    <br>
+    <button class="btn btn-green" onclick="exportCSV()">⬇ Download Results (CSV)</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  QUESTION BANK — auto-injected by build.py from questions.xlsx
+//  To update: edit questions.xlsx, then run:  python build.py
+// ═══════════════════════════════════════════════════════════════
+/*QUESTION_BANK*/
+const ALL_QUESTIONS = [];
+/*END_QUESTION_BANK*/
+
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgzwjpeOfL2lYmaRYOGBWWFdRVTGCRidBJGv8cRvQtz70sNqpWaq0Tcf0U3WqYfHQ/exec";
+const SET_SIZE = 3;
+
+// ─── DIAGRAM BUILDERS ────────────────────────────────────────────────────────
+function buildDiagram(type) {
+  const diagrams = {
+
+    // ── BAT & BALL ──────────────────────────────────────────────────────────
+    "bat-ball": `
+      <div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">💰</div>
+          <div><div class="dg-title">Breaking Down the Costs</div><div class="dg-subtitle">Let x = ball price. Bat = x + $1.00. Together they total $1.10</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:bat-ball*/
+          /*FALLBACK:bat-ball*/
+          <div class="dg-cost-bars">
+            <div class="dg-cost-row">
+              <div class="dg-cost-lbl" style="color:#a5b4fc">🏏 Bat</div>
+              <div class="dg-cost-track">
+                <div class="dg-cost-fill" style="width:95.5%;background:linear-gradient(90deg,#4f46e5,#818cf8)"><span>105¢</span></div>
+              </div>
+            </div>
+            <div class="dg-cost-row">
+              <div class="dg-cost-lbl" style="color:#6ee7b7">⚾ Ball</div>
+              <div class="dg-cost-track" style="position:relative">
+                <div class="dg-cost-fill" style="width:4.5%;background:linear-gradient(90deg,#059669,#34d399);min-width:36px"><span style="font-size:0.7rem">5¢</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="dg-sum-row">
+            <div class="dg-chip" style="background:rgba(79,70,229,0.2);color:#a5b4fc;border-color:rgba(99,102,241,0.4)">🏏 Bat = 105¢</div>
+            <span style="color:#475569;font-weight:700">+</span>
+            <div class="dg-chip" style="background:rgba(5,150,105,0.2);color:#6ee7b7;border-color:rgba(16,185,129,0.4)">⚾ Ball = 5¢</div>
+            <span style="color:#475569;font-weight:700">=</span>
+            <div class="dg-chip" style="background:rgba(234,179,8,0.2);color:#fde047;border-color:rgba(234,179,8,0.4)">✅ Total = 110¢</div>
+          </div>
+          /*END_FALLBACK:bat-ball*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: 10¢ — if ball = 10¢, bat = $1.10, total = $1.20. That's too much!</div>
+        </div>
+      </div>`,
+
+    // ── MACHINES ────────────────────────────────────────────────────────────
+    "machines": `
+      <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">⚙️</div>
+          <div><div class="dg-title">Parallel Work = Same Time</div><div class="dg-subtitle">More machines don't change duration — they run simultaneously</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:machines*/
+          /*FALLBACK:machines*/
+          <div class="dg-par-grid">
+            <div class="dg-par-card" style="background:rgba(255,255,255,0.06)">
+              <div class="dg-par-emoji">⚙️</div>
+              <div class="dg-par-label">1 machine</div>
+              <div class="dg-par-time" style="color:#86efac">5 min</div>
+              <div class="dg-par-widgets">→ 1 widget</div>
+            </div>
+            <div class="dg-par-card" style="background:rgba(255,255,255,0.06)">
+              <div class="dg-par-emoji">⚙️⚙️⚙️⚙️⚙️</div>
+              <div class="dg-par-label">5 machines</div>
+              <div class="dg-par-time" style="color:#86efac">5 min</div>
+              <div class="dg-par-widgets">→ 5 widgets</div>
+            </div>
+            <div class="dg-par-card" style="background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.4)">
+              <div class="dg-par-label" style="color:#6ee7b7">100 machines</div>
+              <div class="dg-par-time" style="color:#34d399;font-size:1.3rem">5 min ✓</div>
+              <div class="dg-par-widgets" style="color:#6ee7b7">→ 100 widgets</div>
+            </div>
+          </div>
+          /*END_FALLBACK:machines*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: 100 min — this assumes sequential work, not parallel</div>
+        </div>
+      </div>`,
+
+    // ── LILY PADS ───────────────────────────────────────────────────────────
+    "lily": `
+      <div style="background:linear-gradient(135deg,#14532d,#166534);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">🌿</div>
+          <div><div class="dg-title">Work Backwards — Don't Halve the Days</div><div class="dg-subtitle">Exponential growth: the lake doubles every single day</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:lily*/
+          /*FALLBACK:lily*/
+          <div class="dg-lily-track">
+            <div class="dg-lily-seg" style="flex:1;background:linear-gradient(135deg,rgba(5,150,105,0.3),rgba(5,150,105,0.5));padding:0 14px">
+              <div class="dg-lily-seg-lbl" style="color:#6ee7b7">Day 47</div>
+              <div style="font-size:1.8rem">🌿</div>
+              <div class="dg-lily-seg-val" style="color:#34d399">½ lake</div>
+            </div>
+            <div class="dg-lily-mid"><span>×2 →</span></div>
+            <div class="dg-lily-seg" style="flex:1;background:linear-gradient(135deg,rgba(5,150,105,0.5),rgba(5,150,105,0.8));padding:0 14px">
+              <div class="dg-lily-seg-lbl" style="color:#a7f3d0">Day 48</div>
+              <div style="font-size:1.8rem">🏞️</div>
+              <div class="dg-lily-seg-val" style="color:#fff">Full lake ✓</div>
+            </div>
+          </div>
+          <div class="dg-lily-extra">
+            <div class="dg-lily-fact" style="background:rgba(0,0,0,0.25);color:rgba(255,255,255,0.55)">
+              🔑 Key insight: the day before Day 48 must be exactly half — because doubling half gives the whole.
+            </div>
+          </div>
+          /*END_FALLBACK:lily*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: 24 days — that's only true for linear growth, not doubling</div>
+        </div>
+      </div>`,
+
+    // ── RACE ────────────────────────────────────────────────────────────────
+    "race": `
+      <div style="background:linear-gradient(135deg,#7c2d12,#9a3412);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">🏃</div>
+          <div><div class="dg-title">You Pass 2nd — You Become 2nd</div><div class="dg-subtitle">Overtaking someone puts you in their place, not ahead of them</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:race*/
+          /*FALLBACK:race*/
+          <div class="dg-race-panels">
+            <div class="dg-race-panel">
+              <div class="dg-race-head">Before</div>
+              <div class="dg-race-row" style="background:rgba(239,68,68,0.12);color:#fca5a5"><span class="dg-race-pos">🥇</span>🏃 Runner A</div>
+              <div class="dg-race-row" style="color:rgba(255,255,255,0.5)"><span class="dg-race-pos">🥈</span>🏃 Runner B</div>
+              <div class="dg-race-row" style="background:rgba(251,191,36,0.1);color:#fde68a"><span class="dg-race-pos">🥉</span>🏃 YOU</div>
+            </div>
+            <div class="dg-race-arrow-mid">→</div>
+            <div class="dg-race-panel">
+              <div class="dg-race-head">After</div>
+              <div class="dg-race-row" style="background:rgba(239,68,68,0.12);color:#fca5a5"><span class="dg-race-pos">🥇</span>🏃 Runner A</div>
+              <div class="dg-race-row" style="background:rgba(16,185,129,0.15);color:#6ee7b7;font-weight:800"><span class="dg-race-pos">🥈</span>🏃 YOU ✓</div>
+              <div class="dg-race-row" style="color:rgba(255,255,255,0.4)"><span class="dg-race-pos">🥉</span>🏃 Runner B</div>
+            </div>
+          </div>
+          /*END_FALLBACK:race*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: 1st place — you never passed the leader, only 2nd!</div>
+        </div>
+      </div>`,
+
+    // ── SHEEP ───────────────────────────────────────────────────────────────
+    "sheep": `
+      <div style="background:linear-gradient(135deg,#1e3a5f,#1e40af);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">🐑</div>
+          <div><div class="dg-title">"All But 9" Means 9 Remain</div><div class="dg-subtitle">"All but 9 die" = all die <em style="color:#93c5fd;font-style:normal;font-weight:700">except</em> 9 — so 9 survive</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:sheep*/
+          /*FALLBACK:sheep*/
+          <div class="dg-flock">
+            ${Array.from({length:17},(_,i) => i<9
+              ? `<div class="dg-flock-sheep dg-sheep-ok">🐑</div>`
+              : `<div class="dg-flock-sheep dg-sheep-gone">💀</div>`
+            ).join('')}
+          </div>
+          <div class="dg-flock-legend">
+            <div class="dg-fl-item" style="color:#6ee7b7"><div class="dg-fl-dot" style="background:#10b981;border-color:#34d399"></div>9 sheep survive</div>
+            <div class="dg-fl-item" style="color:#fca5a5"><div class="dg-fl-dot" style="background:#ef4444;border-color:#f87171"></div>8 sheep die</div>
+          </div>
+          /*END_FALLBACK:sheep*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: 8 — from calculating 17 − 9 instead of reading "all but 9"</div>
+        </div>
+      </div>`,
+
+    // ── SNAIL ───────────────────────────────────────────────────────────────
+    "snail": `
+      <div style="background:linear-gradient(135deg,#1e1b4b,#2e1065);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">🐌</div>
+          <div><div class="dg-title">Net +1 ft/hr, But Escapes on Hour 28</div><div class="dg-subtitle">+3 ft climb − 2 ft slide = net +1 ft/hr. On hour 28 it reaches the top before sliding</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:snail*/
+          /*FALLBACK:snail*/
+          <div class="dg-snail-wrap">
+            <div class="dg-well-outer">
+              <div class="dg-well-cap" style="color:#a7f3d0">🏁 30ft</div>
+              <div class="dg-well-tube">
+                <div class="dg-well-water" style="background:linear-gradient(180deg,rgba(139,92,246,0.6),rgba(79,70,229,0.8))"></div>
+                <div class="dg-well-line" style="bottom:91.7%;border-top:1.5px dashed rgba(16,185,129,0.7)"></div>
+                <div class="dg-well-snail-emoji" style="bottom:89%">🐌</div>
+                <div style="position:absolute;top:3px;left:0;right:0;text-align:center;font-size:0.48rem;color:#6ee7b7;font-weight:800;z-index:2">ESCAPE ✓</div>
+              </div>
+              <div style="color:rgba(255,255,255,0.3);font-size:0.65rem">0ft</div>
+            </div>
+            <div class="dg-sn-table">
+              <div class="dg-sn-hd"><span>Hour</span><span>Height</span></div>
+              <div class="dg-sn-row"><span>After hr 1</span><span>1 ft</span></div>
+              <div class="dg-sn-row"><span>After hr 2</span><span>2 ft</span></div>
+              <div class="dg-sn-row" style="color:rgba(255,255,255,0.2)"><span>⋯</span><span>⋯</span></div>
+              <div class="dg-sn-row"><span>After hr 27</span><span>27 ft</span></div>
+              <div class="dg-sn-hl"><span>During hr 28</span><span>+3 → 30 ft ✓</span></div>
+            </div>
+          </div>
+          /*END_FALLBACK:snail*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: 30 hours — ignores the escape-before-sliding rule on the final climb</div>
+        </div>
+      </div>`,
+
+    // ── SYLLOGISM ───────────────────────────────────────────────────────────
+    "syllogism": `
+      <div style="background:linear-gradient(135deg,#4a1942,#5b21b6);border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+        <div class="dg-header" style="background:rgba(0,0,0,0.3)">
+          <div class="dg-icon">🌹</div>
+          <div><div class="dg-title">The Sets Don't Have to Overlap</div><div class="dg-subtitle">Both are subsets of "flowers" — but they can be completely separate subsets</div></div>
+        </div>
+        <div class="dg-body">
+          /*IMG:syllogism*/
+          /*FALLBACK:syllogism*/
+          <div class="dg-venn-wrap">
+            <svg viewBox="0 0 380 170" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+              <defs>
+                <radialGradient id="gFlower" cx="50%" cy="50%"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/></radialGradient>
+                <radialGradient id="gRose"   cx="50%" cy="50%"><stop offset="0%" stop-color="#e879f9" stop-opacity="0.35"/><stop offset="100%" stop-color="#c026d3" stop-opacity="0.10"/></radialGradient>
+                <radialGradient id="gFade"   cx="50%" cy="50%"><stop offset="0%" stop-color="#fbbf24" stop-opacity="0.35"/><stop offset="100%" stop-color="#d97706" stop-opacity="0.10"/></radialGradient>
+              </defs>
+              <ellipse cx="190" cy="88" rx="165" ry="72" fill="url(#gFlower)" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="6,3"/>
+              <text x="190" y="24" text-anchor="middle" font-size="12" fill="#93c5fd" font-weight="700">🌸 All Flowers</text>
+              <ellipse cx="120" cy="96" rx="66" ry="46" fill="url(#gRose)" stroke="#e879f9" stroke-width="2"/>
+              <text x="120" y="91" text-anchor="middle" font-size="11" fill="#f0abfc" font-weight="800">🌹 Roses</text>
+              <text x="120" y="107" text-anchor="middle" font-size="10" fill="rgba(240,171,252,0.6)">(some flowers)</text>
+              <ellipse cx="272" cy="96" rx="62" ry="44" fill="url(#gFade)" stroke="#fbbf24" stroke-width="2"/>
+              <text x="272" y="91" text-anchor="middle" font-size="11" fill="#fde68a" font-weight="800">🍂 Fading</text>
+              <text x="272" y="107" text-anchor="middle" font-size="10" fill="rgba(253,230,138,0.6)">(some flowers)</text>
+              <text x="196" y="100" text-anchor="middle" font-size="18" fill="rgba(239,68,68,0.7)">✗</text>
+              <text x="196" y="155" text-anchor="middle" font-size="10.5" fill="#f87171" font-weight="700">No required overlap — conclusion is INVALID</text>
+            </svg>
+          </div>
+          <div class="dg-venn-legend">
+            <div class="dg-vl-item" style="color:#93c5fd"><div class="dg-vl-dot" style="background:rgba(96,165,250,0.3);border-color:#60a5fa"></div>All Flowers (universe)</div>
+            <div class="dg-vl-item" style="color:#f0abfc"><div class="dg-vl-dot" style="background:rgba(232,121,249,0.3);border-color:#e879f9"></div>Roses ⊂ Flowers</div>
+            <div class="dg-vl-item" style="color:#fde68a"><div class="dg-vl-dot" style="background:rgba(251,191,36,0.3);border-color:#fbbf24"></div>Fading Flowers ⊂ Flowers</div>
+          </div>
+          /*END_FALLBACK:syllogism*/
+          <div class="dg-note dg-note-warn">⚠️ Common wrong answer: True — feels right intuitively but the overlap is not logically required</div>
+        </div>
+      </div>`,
+  };
+
+  const html = diagrams[type] || diagrams["sheep"];
+  return `<div class="dg-card">${html}</div>`;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const shuffle = a => {
+  const b = [...a];
+  for (let i=b.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [b[i],b[j]] = [b[j],b[i]];
+  }
+  return b;
+};
+const showScreen = id => {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let pid='', assignedSet=[], assignedSetIndex=0, feedbackOrder=[];
+let currentTrial=0, trialStart=null, timerInterval=null, results=[];
+
+// ─── START ───────────────────────────────────────────────────────────────────
+function startExperiment() {
+  pid = document.getElementById('participant-id').value.trim();
+  if (!pid) { alert('Please enter a participant ID.'); return; }
+  if (ALL_QUESTIONS.length < SET_SIZE) {
+    alert(`Question bank has only ${ALL_QUESTIONS.length} question(s). Need at least ${SET_SIZE}.`);
+    return;
+  }
+
+  // Shuffle and pick a random set of SET_SIZE questions
+  const shuffled = shuffle(ALL_QUESTIONS);
+  const numSets  = Math.floor(shuffled.length / SET_SIZE);
+  assignedSetIndex = Math.floor(Math.random() * numSets);
+  assignedSet = shuffled.slice(assignedSetIndex * SET_SIZE, (assignedSetIndex + 1) * SET_SIZE);
+
+  // Balanced feedback: for 3 questions → either [D,D,T] or [D,T,T], randomised
+  feedbackOrder = shuffle(Math.random() < 0.5
+    ? ['diagram','diagram','text']
+    : ['diagram','text','text']);
+
+  currentTrial = 0;
+  results = [];
+  showScreen('screen-trial');
+  loadTrial();
+}
+
+// ─── TRIAL ───────────────────────────────────────────────────────────────────
+function loadTrial() {
+  const p = assignedSet[currentTrial];
+  document.getElementById('trial-label').textContent   = `Trial ${currentTrial+1} of ${SET_SIZE}`;
+  document.getElementById('progress-fill').style.width = `${(currentTrial/SET_SIZE)*100}%`;
+  document.getElementById('problem-text').textContent  = p.text;
+  document.getElementById('answer-input').value = '';
+  document.getElementById('answer-input').focus();
+  clearInterval(timerInterval);
+  trialStart = Date.now();
+  timerInterval = setInterval(() => {
+    document.getElementById('timer-display').textContent =
+      `⏱ ${((Date.now()-trialStart)/1000).toFixed(1)}s`;
+  }, 100);
+}
+
+function submitAnswer() {
+  const elapsed = (Date.now()-trialStart)/1000;
+  clearInterval(timerInterval);
+  const raw = document.getElementById('answer-input').value.trim();
+  if (!raw) {
+    alert('Please enter an answer.');
+    trialStart = Date.now() - elapsed*1000;
+    timerInterval = setInterval(() => {
+      document.getElementById('timer-display').textContent =
+        `⏱ ${((Date.now()-trialStart)/1000).toFixed(1)}s`;
+    }, 100);
+    return;
+  }
+
+  const p         = assignedSet[currentTrial];
+  const fType     = feedbackOrder[currentTrial];
+  const userNorm  = raw.toLowerCase().trim();
+  const isCorrect = userNorm === p.answer;
+
+  const uNum = parseFloat(raw), cNum = parseFloat(p.answer);
+  const absError = (!isNaN(uNum) && !isNaN(cNum)) ? Math.abs(uNum-cNum) : (isCorrect ? 0 : 1);
+
+  results.push({
+    trial: currentTrial+1,
+    problemId: p.id,
+    problemCategory: p.category,
+    userAnswer: raw,
+    correctAnswer: p.answer,
+    isCorrect,
+    absError,
+    responseTime: elapsed,
+    feedbackType: fType,
+    setIndex: assignedSetIndex
+  });
+
+  showFeedback(p, fType, isCorrect, raw, elapsed);
+}
+
+// ─── FEEDBACK ────────────────────────────────────────────────────────────────
+function showFeedback(p, fType, isCorrect, userAnswer, elapsed) {
+  document.getElementById('feedback-badge').innerHTML = fType === 'diagram'
+    ? `<span class="feedback-badge badge-diagram">📊 Diagram Feedback — Trial ${currentTrial+1} of ${SET_SIZE}</span>`
+    : `<span class="feedback-badge badge-text">📝 Text Feedback — Trial ${currentTrial+1} of ${SET_SIZE}</span>`;
+
+  document.getElementById('result-banner').innerHTML = isCorrect
+    ? `<div class="result-banner banner-correct">
+         <div class="banner-icon">✅</div>
+         <div><div class="banner-title">Correct!</div>
+              <div class="banner-sub">Response time: ${elapsed.toFixed(2)}s</div></div>
+       </div>`
+    : `<div class="result-banner banner-wrong">
+         <div class="banner-icon">❌</div>
+         <div><div class="banner-title">Incorrect — your answer: ${userAnswer} | correct: ${p.answer}</div>
+              <div class="banner-sub">Response time: ${elapsed.toFixed(2)}s</div></div>
+       </div>`;
+
+  document.getElementById('feedback-content').innerHTML = fType === 'diagram'
+    ? buildDiagram(p.diagramType) + `<div class="explanation-box">${p.textFeedback}</div>`
+    : `<div class="explanation-box"><strong>📝 Explanation:</strong><br><br>${p.textFeedback}</div>`;
+
+  showScreen('screen-feedback');
+}
+
+function nextTrial() {
+  currentTrial++;
+  if (currentTrial >= SET_SIZE) {
+    showResults();
+  } else {
+    showScreen('screen-trial');
+    loadTrial();
+  }
+}
+
+// ─── RESULTS ─────────────────────────────────────────────────────────────────
+function showResults() {
+  const correct = results.filter(r=>r.isCorrect).length;
+  const avgTime = (results.reduce((s,r)=>s+r.responseTime,0)/results.length).toFixed(2);
+  document.getElementById('res-correct').textContent  = correct;
+  document.getElementById('res-avg-time').textContent = avgTime+'s';
+  document.getElementById('res-set').textContent      = `Set ${assignedSetIndex+1}`;
+  document.getElementById('res-pid').textContent      = pid;
+  document.getElementById('results-tbody').innerHTML  = results.map(r=>`<tr>
+    <td>${r.trial}</td>
+    <td>${r.problemId}</td>
+    <td>${r.userAnswer}</td>
+    <td>${r.correctAnswer}</td>
+    <td>${r.responseTime.toFixed(2)}</td>
+    <td><span class="pill ${r.feedbackType==='diagram'?'pill-diagram':'pill-text'}">${r.feedbackType}</span></td>
+    <td class="${r.isCorrect?'cell-correct':'cell-wrong'}">${r.absError}</td>
+  </tr>`).join('');
+  showScreen('screen-results');
+  saveToGoogleSheets();
+}
+
+async function saveToGoogleSheets() {
+  const msg = document.getElementById('saving-msg');
+  msg.textContent = '⏳ Saving results to database…';
+  msg.className   = 'saving-msg';
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        participantId: pid,
+        setIndex: assignedSetIndex,
+        timestamp: new Date().toISOString(),
+        trials: results.map(r=>({...r, correctAnswer:String(r.correctAnswer)}))
+      })
+    });
+    msg.textContent = '✅ Results saved successfully!';
+    msg.className   = 'saving-msg success';
+  } catch(e) {
+    msg.textContent = '⚠️ Could not save remotely — please download the CSV below.';
+    msg.className   = 'saving-msg error';
+  }
+}
+
+function exportCSV() {
+  const hdr = ['Timestamp','ParticipantID','SetIndex','Trial','ProblemID','Category',
+               'UserAnswer','CorrectAnswer','IsCorrect','AbsError','ResponseTime_s','FeedbackType'];
+  const ts  = new Date().toISOString();
+  const rows = results.map(r=>[
+    ts, pid, r.setIndex, r.trial, r.problemId, r.problemCategory,
+    r.userAnswer, r.correctAnswer, r.isCorrect?1:0,
+    r.absError, r.responseTime.toFixed(3), r.feedbackType
+  ]);
+  const csv = [hdr,...rows].map(r=>r.join(',')).join('\n');
+  const a   = document.createElement('a');
+  a.href    = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download= `results_${pid}_set${assignedSetIndex+1}_${Date.now()}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>
