@@ -4,97 +4,281 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Analytical Reasoning Study | MIE 286</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter','Segoe UI',sans-serif; min-height:100vh; background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); color:#e2e8f0; }
-  .screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
-  .screen.active { display:flex; }
-  .card { background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:40px; max-width:720px; width:100%; box-shadow:0 25px 50px rgba(0,0,0,0.4); }
-  .logo { display:inline-block; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:6px 14px; border-radius:99px; margin-bottom:18px; }
-  h1 { font-size:2rem; font-weight:800; margin-bottom:8px; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  h2 { font-size:1.15rem; font-weight:600; margin-bottom:14px; color:#cbd5e0; }
-  p  { color:#94a3b8; line-height:1.75; margin-bottom:12px; font-size:0.95rem; }
-  label { display:block; font-weight:600; font-size:0.9rem; color:#cbd5e0; margin-bottom:8px; }
-  input[type="text"] { width:100%; padding:12px 16px; background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.15); border-radius:10px; font-size:1rem; color:#e2e8f0; margin-bottom:18px; transition:border-color .2s,background .2s; font-family:inherit; }
-  input[type="text"]::placeholder { color:#64748b; }
-  input[type="text"]:focus { outline:none; border-color:#7c3aed; background:rgba(124,58,237,.1); }
-  .btn { display:block; width:100%; padding:14px 28px; border-radius:12px; border:none; font-size:1rem; font-weight:700; cursor:pointer; transition:all .2s; margin-bottom:10px; font-family:inherit; letter-spacing:.3px; }
-  .btn-purple { background:linear-gradient(135deg,#7c3aed,#4f46e5); color:#fff; box-shadow:0 4px 20px rgba(124,58,237,.4); }
-  .btn-purple:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(124,58,237,.5); }
-  .btn-green  { background:linear-gradient(135deg,#059669,#10b981); color:#fff; box-shadow:0 4px 20px rgba(16,185,129,.4); }
-  .btn-green:hover  { transform:translateY(-2px); box-shadow:0 8px 25px rgba(16,185,129,.5); }
-  .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0; }
-  .info-box { background:rgba(255,255,255,.05); border-radius:12px; padding:16px; text-align:center; border:1px solid rgba(255,255,255,.08); }
-  .info-box .ico { font-size:1.6rem; margin-bottom:6px; }
-  .info-box .lbl { font-size:.8rem; color:#94a3b8; }
-  .info-box .val { font-size:.95rem; font-weight:700; color:#e2e8f0; }
-  .trial-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-  .trial-label  { font-size:.85rem; font-weight:600; color:#94a3b8; }
-  .timer-display { font-size:.85rem; font-weight:600; color:#a78bfa; background:rgba(167,139,250,.1); padding:4px 12px; border-radius:99px; }
-  .progress-bar { width:100%; height:6px; background:rgba(255,255,255,.1); border-radius:99px; margin-bottom:24px; overflow:hidden; }
-  .progress-fill { height:100%; background:linear-gradient(90deg,#7c3aed,#60a5fa); border-radius:99px; transition:width .5s ease; }
-  .problem-box { background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.3); border-left:4px solid #6366f1; border-radius:12px; padding:22px; margin-bottom:22px; font-size:1rem; line-height:1.8; color:#e2e8f0; }
+  :root {
+    --bg0: #0b0c10;
+    --bg1: #13141a;
+    --bg2: #1b1d27;
+    --border: rgba(255,255,255,0.08);
+    --border-hi: rgba(255,255,255,0.14);
+    --text-hi: #f1f5f9;
+    --text-md: #94a3b8;
+    --text-lo: #4b5563;
+    --accent: #7c3aed;
+    --accent2: #3b82f6;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --radius: 18px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:'DM Sans','Segoe UI',sans-serif;
+    min-height:100vh;
+    background:var(--bg0);
+    color:var(--text-hi);
+    overflow-x:hidden;
+  }
+
+  /* ── Animated noise/grid background ── */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(59,130,246,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(16,185,129,0.05) 0%, transparent 70%);
+  }
+
+  /* ── Screens ── */
+  .screen { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; position:relative; z-index:1; }
+  .screen.active { display:flex; animation: fadeUp 0.4s ease both; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── Card ── */
+  .card {
+    background:var(--bg1);
+    border:1px solid var(--border-hi);
+    border-radius:24px;
+    padding:40px;
+    max-width:680px;
+    width:100%;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* ── Tag / Logo ── */
+  .tag {
+    display:inline-flex; align-items:center; gap:7px;
+    background:rgba(124,58,237,0.15);
+    border:1px solid rgba(124,58,237,0.35);
+    color:#a78bfa;
+    font-family:'Outfit',sans-serif;
+    font-size:0.72rem; font-weight:700; letter-spacing:1.5px;
+    text-transform:uppercase; padding:5px 14px; border-radius:99px;
+    margin-bottom:22px;
+  }
+
+  h1 {
+    font-family:'Outfit',sans-serif;
+    font-size:2.1rem; font-weight:800; line-height:1.15;
+    margin-bottom:10px;
+    background:linear-gradient(135deg,#c4b5fd 0%,#818cf8 40%,#60a5fa 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  h2 { font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:700; color:var(--text-hi); margin-bottom:12px; }
+  p  { color:var(--text-md); line-height:1.8; margin-bottom:12px; font-size:0.94rem; }
+
+  label { display:block; font-weight:600; font-size:0.85rem; color:#cbd5e0; margin-bottom:8px; font-family:'Outfit',sans-serif; }
+
+  input[type="text"] {
+    width:100%; padding:13px 16px;
+    background:var(--bg2);
+    border:1.5px solid var(--border-hi);
+    border-radius:12px;
+    font-size:1rem; color:var(--text-hi);
+    margin-bottom:18px;
+    transition:border-color .2s,background .2s,box-shadow .2s;
+    font-family:'DM Sans',sans-serif;
+  }
+  input[type="text"]::placeholder { color:#4b5563; }
+  input[type="text"]:focus { outline:none; border-color:var(--accent); background:rgba(124,58,237,.08); box-shadow:0 0 0 3px rgba(124,58,237,0.15); }
+
+  .btn {
+    display:block; width:100%; padding:14px 28px;
+    border-radius:12px; border:none;
+    font-size:0.95rem; font-weight:700; cursor:pointer;
+    transition:all .2s; margin-bottom:10px;
+    font-family:'Outfit',sans-serif; letter-spacing:.3px;
+  }
+  .btn-purple {
+    background:linear-gradient(135deg,#7c3aed,#4f46e5);
+    color:#fff; box-shadow:0 4px 20px rgba(124,58,237,.35);
+  }
+  .btn-purple:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(124,58,237,.5); }
+  .btn-green  { background:linear-gradient(135deg,#059669,#0d9488); color:#fff; box-shadow:0 4px 20px rgba(16,185,129,.3); }
+  .btn-green:hover  { transform:translateY(-2px); box-shadow:0 8px 28px rgba(16,185,129,.45); }
+  .btn-ghost { background:transparent; border:1.5px solid var(--border-hi); color:var(--text-md); }
+  .btn-ghost:hover { border-color:var(--border-hi); background:var(--bg2); color:var(--text-hi); }
+
+  /* ── Info grid on intro ── */
+  .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:20px 0; }
+  .info-box {
+    background:var(--bg2); border-radius:14px; padding:16px 12px; text-align:center;
+    border:1px solid var(--border);
+  }
+  .info-box .ico { font-size:1.5rem; margin-bottom:6px; }
+  .info-box .lbl { font-size:.75rem; color:var(--text-md); margin-top:4px; }
+  .info-box .val { font-size:.95rem; font-weight:700; color:var(--text-hi); font-family:'Outfit',sans-serif; }
+
+  /* ── Progress ── */
+  .progress-wrap { margin-bottom:28px; }
+  .progress-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .progress-label span { font-size:.8rem; font-weight:600; font-family:'Outfit',sans-serif; }
+  .progress-label .trial-label { color:var(--text-md); }
+  .progress-bar { width:100%; height:5px; background:rgba(255,255,255,.06); border-radius:99px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#7c3aed,#60a5fa); border-radius:99px; transition:width .45s cubic-bezier(.4,0,.2,1); }
+
+  /* ── Countdown ring ── */
+  .trial-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; gap:20px; }
+  .countdown-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; }
+  .countdown-ring { position:relative; width:72px; height:72px; }
+  .countdown-ring svg { transform:rotate(-90deg); }
+  .ring-bg   { fill:none; stroke:rgba(255,255,255,0.08); stroke-width:5; }
+  .ring-fill {
+    fill:none; stroke-width:5;
+    stroke-linecap:round;
+    stroke:var(--green);
+    stroke-dasharray: 207;
+    stroke-dashoffset: 0;
+    transition: stroke .3s;
+  }
+  .countdown-num {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    font-family:'Outfit',sans-serif; font-size:1.6rem; font-weight:900;
+    color:var(--text-hi);
+    transition:color .3s;
+  }
+  .countdown-lbl { font-size:0.65rem; font-weight:600; color:var(--text-lo); letter-spacing:.5px; text-transform:uppercase; font-family:'Outfit',sans-serif; }
+
+  /* ── Problem box ── */
+  .problem-box {
+    background:var(--bg2);
+    border:1px solid rgba(99,102,241,.25);
+    border-left:4px solid #6366f1;
+    border-radius:14px;
+    padding:24px;
+    margin-bottom:22px;
+    font-size:1.02rem;
+    line-height:1.85;
+    color:var(--text-hi);
+  }
+
+  /* ── Answer row ── */
   .answer-row { display:flex; gap:10px; align-items:center; }
   .answer-row input { margin-bottom:0; flex:1; }
   .answer-row .btn { width:auto; margin-bottom:0; white-space:nowrap; padding:12px 24px; }
-  .feedback-badge { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:700; letter-spacing:.5px; padding:5px 14px; border-radius:99px; margin-bottom:16px; }
-  .badge-diagram { background:rgba(96,165,250,.15); color:#60a5fa; border:1px solid rgba(96,165,250,.3); }
-  .badge-text    { background:rgba(167,139,250,.15); color:#a78bfa; border:1px solid rgba(167,139,250,.3); }
-  .result-banner { border-radius:12px; padding:18px 22px; margin-bottom:20px; display:flex; align-items:center; gap:14px; }
-  .banner-correct { background:rgba(16,185,129,.15); border:1px solid rgba(16,185,129,.35); }
-  .banner-wrong   { background:rgba(239,68,68,.15);  border:1px solid rgba(239,68,68,.35); }
+
+  /* ── Feedback ── */
+  .feedback-badge { display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:700; letter-spacing:.5px; padding:5px 14px; border-radius:99px; margin-bottom:16px; font-family:'Outfit',sans-serif; }
+  .badge-diagram { background:rgba(96,165,250,.12); color:#60a5fa; border:1px solid rgba(96,165,250,.3); }
+  .badge-text    { background:rgba(167,139,250,.12); color:#a78bfa; border:1px solid rgba(167,139,250,.3); }
+
+  .result-banner { border-radius:14px; padding:18px 22px; margin-bottom:20px; display:flex; align-items:center; gap:14px; }
+  .banner-correct { background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); }
+  .banner-wrong   { background:rgba(239,68,68,.12);  border:1px solid rgba(239,68,68,.3); }
+  .banner-timeout { background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.3); }
   .banner-icon  { font-size:2rem; }
-  .banner-title { font-weight:700; font-size:1.05rem; }
+  .banner-title { font-weight:700; font-size:1rem; font-family:'Outfit',sans-serif; }
   .banner-correct .banner-title { color:#10b981; }
   .banner-wrong   .banner-title { color:#ef4444; }
-  .banner-sub { font-size:.85rem; color:#94a3b8; margin-top:2px; }
-  .explanation-box { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:18px; margin-bottom:20px; font-size:.92rem; line-height:1.75; color:#cbd5e0; }
-  .explanation-box strong { color:#e2e8f0; }
-  .diagram-container { background:rgba(255,255,255,.04); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:18px; margin-bottom:20px; }
+  .banner-timeout .banner-title { color:#f59e0b; }
+  .banner-sub { font-size:.82rem; color:var(--text-md); margin-top:3px; }
+
+  .explanation-box { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:20px; font-size:.91rem; line-height:1.8; color:#cbd5e0; }
+  .explanation-box strong { color:var(--text-hi); }
+  .diagram-container { background:var(--bg2); border:1px solid rgba(96,165,250,.2); border-radius:12px; padding:18px; margin-bottom:20px; }
   .diagram-container svg { width:100%; height:auto; display:block; }
-  .results-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:22px 0; }
-  .result-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:20px; text-align:center; }
-  .result-card .val { font-size:2.2rem; font-weight:800; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .result-card .lbl { font-size:.8rem; color:#64748b; margin-top:4px; font-weight:500; }
-  table { width:100%; border-collapse:collapse; margin-top:16px; font-size:.82rem; }
-  th { background:rgba(255,255,255,.07); padding:10px 12px; text-align:left; font-weight:600; color:#94a3b8; font-size:.78rem; text-transform:uppercase; letter-spacing:.5px; }
-  td { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); color:#cbd5e0; }
+
+  /* ── Results screen ── */
+  .results-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:22px 0; }
+  .result-card {
+    background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:20px; text-align:center;
+  }
+  .result-card .val { font-size:2rem; font-weight:800; font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .result-card .lbl { font-size:.75rem; color:#64748b; margin-top:5px; font-weight:500; }
+
+  /* ── PERCENTILE SECTION ── */
+  .percentile-card {
+    background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(59,130,246,0.1));
+    border:1px solid rgba(124,58,237,0.35);
+    border-radius:18px;
+    padding:28px;
+    margin:20px 0;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .percentile-card::before {
+    content:'';
+    position:absolute; top:-40px; right:-40px;
+    width:140px; height:140px;
+    background:radial-gradient(circle,rgba(124,58,237,0.25),transparent 70%);
+    pointer-events:none;
+  }
+  .percentile-lbl { font-size:0.75rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#a78bfa; margin-bottom:10px; font-family:'Outfit',sans-serif; }
+  .percentile-num {
+    font-family:'Outfit',sans-serif; font-size:3.8rem; font-weight:900; line-height:1;
+    background:linear-gradient(135deg,#c4b5fd,#60a5fa);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    margin-bottom:6px;
+  }
+  .percentile-sub { font-size:0.88rem; color:var(--text-md); line-height:1.6; margin-bottom:18px; }
+  .percentile-bar-wrap { background:rgba(255,255,255,0.07); border-radius:99px; height:10px; overflow:hidden; margin:14px 0 8px; }
+  .percentile-bar-fill {
+    height:100%; border-radius:99px;
+    background:linear-gradient(90deg,#7c3aed,#3b82f6,#06b6d4);
+    transition:width 1.2s cubic-bezier(.22,1,.36,1);
+    width:0%;
+  }
+  .percentile-range-labels { display:flex; justify-content:space-between; font-size:0.68rem; color:var(--text-lo); font-weight:600; font-family:'Outfit',sans-serif; margin-bottom:14px; }
+  .percentile-comparison { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .perc-chip {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 12px; border-radius:99px; font-size:0.76rem; font-weight:700;
+    background:rgba(255,255,255,0.07); border:1px solid var(--border-hi);
+    color:var(--text-md); font-family:'Outfit',sans-serif;
+  }
+
+  /* ── Table ── */
+  table { width:100%; border-collapse:collapse; margin-top:16px; font-size:.8rem; }
+  th { background:var(--bg2); padding:10px 12px; text-align:left; font-weight:700; color:var(--text-md); font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; font-family:'Outfit',sans-serif; }
+  td { padding:10px 12px; border-bottom:1px solid var(--border); color:#cbd5e0; }
   tr:last-child td { border-bottom:none; }
-  tr:hover td { background:rgba(255,255,255,.03); }
+  tr:hover td { background:rgba(255,255,255,.025); }
   .cell-correct { color:#10b981; font-weight:700; }
-  .cell-wrong   { color:#ef4444;  font-weight:700; }
-  .pill { display:inline-block; padding:2px 10px; border-radius:99px; font-size:.75rem; font-weight:600; }
-  .pill-diagram { background:rgba(96,165,250,.15); color:#60a5fa; }
-  .pill-text    { background:rgba(167,139,250,.15); color:#a78bfa; }
-  .saving-msg { font-size:.85rem; text-align:center; margin-bottom:14px; min-height:22px; color:#94a3b8; }
+  .cell-wrong   { color:#ef4444; font-weight:700; }
+  .pill { display:inline-block; padding:2px 10px; border-radius:99px; font-size:.72rem; font-weight:700; font-family:'Outfit',sans-serif; }
+  .pill-diagram { background:rgba(96,165,250,.12); color:#60a5fa; }
+  .pill-text    { background:rgba(167,139,250,.12); color:#a78bfa; }
+
+  .saving-msg { font-size:.84rem; text-align:center; margin-bottom:14px; min-height:22px; color:var(--text-md); font-weight:500; }
   .saving-msg.success { color:#10b981; }
   .saving-msg.error   { color:#ef4444; }
-  .divider { height:1px; background:rgba(255,255,255,.08); margin:20px 0; }
+
+  .divider { height:1px; background:var(--border); margin:22px 0; }
 
   /* ── INFOGRAPHIC DIAGRAM STYLES ─────────────────────────── */
   .dg-card {
-    border-radius: 18px;
-    padding: 0;
-    margin-bottom: 18px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border-radius: 18px; padding: 0; margin-bottom: 18px;
+    overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   }
   .dg-header {
     display: flex; align-items: center; gap: 12px;
-    padding: 14px 20px;
-    background: rgba(0,0,0,0.25);
+    padding: 14px 20px; background: rgba(0,0,0,0.25);
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
   .dg-icon { font-size: 1.6rem; flex-shrink: 0; }
-  .dg-title { font-size: 0.95rem; font-weight: 800; color: #f1f5f9; line-height: 1.2; }
+  .dg-title { font-size: 0.95rem; font-weight: 800; color: #f1f5f9; line-height: 1.2; font-family:'Outfit',sans-serif; }
   .dg-subtitle { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 2px; line-height: 1.4; }
   .dg-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
   .dg-note {
-    font-size: 0.76rem; font-weight: 600;
-    padding: 8px 13px; border-radius: 8px;
-    border-left: 3px solid;
-    line-height: 1.5;
+    font-size: 0.76rem; font-weight: 600; padding: 8px 13px;
+    border-radius: 8px; border-left: 3px solid; line-height: 1.5;
   }
   .dg-note-warn  { background: rgba(251,191,36,0.1);  border-color: #fbbf24; color: #fde68a; }
   .dg-note-right { background: rgba(16,185,129,0.1);  border-color: #10b981; color: #6ee7b7; }
@@ -161,10 +345,17 @@
   .dg-sn-hl { background: linear-gradient(90deg,rgba(16,185,129,0.2),transparent); border-radius: 5px; padding: 4px 6px; color: #6ee7b7; font-weight: 800; }
 
   /* ── SYLLOGISM venn ── */
-  .dg-venn-wrap svg { width: 100%; height: auto; display: block; }
+  .dg-venn-wrap svg { width: 100%; height: auto; display:block; }
   .dg-venn-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
   .dg-vl-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; }
   .dg-vl-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; }
+
+  /* ── Urgency pulse on ring ── */
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.06); }
+  }
+  .ring-urgent { animation: pulse-ring .5s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -172,18 +363,21 @@
 <!-- ── SCREEN 1: Intro ── -->
 <div class="screen active" id="screen-intro">
   <div class="card">
-    <div class="logo">MIE 286 · Group 033 · University of Toronto</div>
+    <div class="tag">🎓 MIE 286 · Group 033 · University of Toronto</div>
     <h1>Analytical Reasoning Study</h1>
     <p>We're studying how different types of feedback affect problem-solving. You'll solve <strong style="color:#e2e8f0">3 math word problems</strong> and receive feedback after each one.</p>
     <div class="info-grid">
       <div class="info-box"><div class="ico">🧩</div><div class="val">3</div><div class="lbl">Problems / Session</div></div>
-      <div class="info-box"><div class="ico">⏱</div><div class="val">3–5 min</div><div class="lbl">Est. Duration</div></div>
+      <div class="info-box"><div class="ico">⚡</div><div class="val">3 sec</div><div class="lbl">Per Question</div></div>
       <div class="info-box"><div class="ico">🔒</div><div class="val">Anonymous</div><div class="lbl">Data Collection</div></div>
     </div>
     <p>Please complete this <strong style="color:#e2e8f0">independently</strong> without any external help. Your answers and response times are recorded for research purposes only.</p>
+    <p style="color:#f59e0b;font-size:0.85rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 14px;margin-bottom:16px">
+      ⚡ <strong style="color:#fbbf24">Important:</strong> Each question has a strict <strong style="color:#fbbf24">3-second timer</strong>. Answer as quickly as you can — the question will auto-submit when time runs out.
+    </p>
     <div class="divider"></div>
-    <label>Participant ID <span style="font-weight:400;color:#64748b;">(e.g. your student number)</span></label>
-    <input type="text" id="participant-id" placeholder="Enter your ID…">
+    <label>Participant ID <span style="font-weight:400;color:#4b5563;">(e.g. your student number)</span></label>
+    <input type="text" id="participant-id" placeholder="Enter your ID…" onkeydown="if(event.key==='Enter')startExperiment()">
     <button class="btn btn-purple" onclick="startExperiment()">Begin Study →</button>
   </div>
 </div>
@@ -191,11 +385,25 @@
 <!-- ── SCREEN 2: Trial ── -->
 <div class="screen" id="screen-trial">
   <div class="card">
-    <div class="trial-header">
-      <span class="trial-label"  id="trial-label">Trial 1 of 3</span>
-      <span class="timer-display" id="timer-display">⏱ 0.0s</span>
+    <div class="trial-top">
+      <div style="flex:1">
+        <div class="progress-label">
+          <span class="trial-label" id="trial-label">Trial 1 of 3</span>
+          <span style="font-size:.8rem;color:var(--text-lo);font-weight:600">Answer fast!</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="countdown-wrap">
+        <div class="countdown-ring" id="countdown-ring">
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle class="ring-bg"   cx="36" cy="36" r="33"/>
+            <circle class="ring-fill" cx="36" cy="36" r="33" id="ring-fill"/>
+          </svg>
+          <div class="countdown-num" id="countdown-num">3</div>
+        </div>
+        <div class="countdown-lbl">seconds</div>
+      </div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     <div class="problem-box" id="problem-text"></div>
     <div class="answer-row">
       <input type="text" id="answer-input" placeholder="Your answer…" onkeydown="if(event.key==='Enter')submitAnswer()">
@@ -217,10 +425,23 @@
 <!-- ── SCREEN 4: Results ── -->
 <div class="screen" id="screen-results">
   <div class="card">
-    <div class="logo">Study Complete</div>
+    <div class="tag">✅ Study Complete</div>
     <h1>Great work! 🎉</h1>
     <p>Thank you for participating. Here's your session summary.</p>
     <div class="saving-msg" id="saving-msg"></div>
+
+    <!-- ── PERCENTILE DISPLAY ── -->
+    <div class="percentile-card" id="percentile-card">
+      <div class="percentile-lbl">Your Percentile Rank</div>
+      <div class="percentile-num" id="perc-num">—</div>
+      <div class="percentile-sub" id="perc-sub">Calculating…</div>
+      <div class="percentile-bar-wrap">
+        <div class="percentile-bar-fill" id="perc-bar"></div>
+      </div>
+      <div class="percentile-range-labels"><span>0th</span><span>25th</span><span>50th</span><span>75th</span><span>100th</span></div>
+      <div class="percentile-comparison" id="perc-chips"></div>
+    </div>
+
     <div class="results-grid">
       <div class="result-card"><div class="val" id="res-correct">—</div><div class="lbl">Correct out of 3</div></div>
       <div class="result-card"><div class="val" id="res-avg-time">—</div><div class="lbl">Avg. Response Time</div></div>
@@ -249,7 +470,8 @@ const ALL_QUESTIONS = [];
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgzwjpeOfL2lYmaRYOGBWWFdRVTGCRidBJGv8cRvQtz70sNqpWaq0Tcf0U3WqYfHQ/exec";
-const SET_SIZE = 3;
+const SET_SIZE      = 3;
+const TRIAL_SECONDS = 3;  // ← countdown per question
 
 // ─── DIAGRAM BUILDERS ────────────────────────────────────────────────────────
 function buildDiagram(type) {
@@ -459,7 +681,7 @@ function buildDiagram(type) {
           /*IMG:syllogism*/
           /*FALLBACK:syllogism*/
           <div class="dg-venn-wrap">
-            <svg viewBox="0 0 380 170" xmlns="http://www.w3.org/2000/svg" font-family="Inter,sans-serif">
+            <svg viewBox="0 0 380 170" xmlns="http://www.w3.org/2000/svg" font-family="Outfit,Inter,sans-serif">
               <defs>
                 <radialGradient id="gFlower" cx="50%" cy="50%"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.18"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/></radialGradient>
                 <radialGradient id="gRose"   cx="50%" cy="50%"><stop offset="0%" stop-color="#e879f9" stop-opacity="0.35"/><stop offset="100%" stop-color="#c026d3" stop-opacity="0.10"/></radialGradient>
@@ -506,9 +728,53 @@ const showScreen = id => {
   document.getElementById(id).classList.add('active');
 };
 
+// ─── PERCENTILE CALCULATOR ───────────────────────────────────────────────────
+// Based on published CRT norms in university populations
+// (Frederick 2005 + subsequent meta-analyses: ~32% score 0, ~27% score 1, ~22% score 2, ~19% score 3)
+const CRT_PERCENTILES = {
+  0: 16,   // bottom ~32% → midpoint ~16th
+  1: 45,   // 32–59% range → ~45th
+  2: 71,   // 59–81% range → ~71st
+  3: 91,   // top ~19% → ~91st
+};
+
+function calcPercentile(numCorrect) {
+  return CRT_PERCENTILES[Math.min(numCorrect, 3)] || 16;
+}
+
+function renderPercentile(numCorrect, avgTime) {
+  const pct = calcPercentile(numCorrect);
+
+  document.getElementById('perc-num').textContent = `${pct}th`;
+
+  // Descriptive text
+  let desc = '';
+  if (pct >= 85)      desc = `You scored better than <strong style="color:#a78bfa">${pct}%</strong> of university students on the Cognitive Reflection Test. Excellent analytical thinking under pressure!`;
+  else if (pct >= 60) desc = `You scored better than <strong style="color:#818cf8">${pct}%</strong> of university students on the CRT. Strong performance on these tricky reasoning problems.`;
+  else if (pct >= 35) desc = `You scored better than <strong style="color:#60a5fa">${pct}%</strong> of university students. These questions are designed to trick the intuitive mind — great effort!`;
+  else                desc = `You scored at the <strong style="color:#94a3b8">${pct}th</strong> percentile. These are famously tricky problems — the intuitive answer is intentionally misleading!`;
+  document.getElementById('perc-sub').innerHTML = desc;
+
+  // Animated bar
+  setTimeout(() => {
+    document.getElementById('perc-bar').style.width = pct + '%';
+  }, 300);
+
+  // Chips
+  const chips = [
+    `🎯 ${numCorrect}/3 Correct`,
+    `⚡ ${avgTime}s Avg Time`,
+    pct >= 70 ? `🏆 Top ${100-pct}%` : pct >= 40 ? `📈 Above Average` : `🧠 Keep Practicing`,
+  ];
+  document.getElementById('perc-chips').innerHTML = chips.map(c =>
+    `<div class="perc-chip">${c}</div>`
+  ).join('');
+}
+
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let pid='', assignedSet=[], assignedSetIndex=0, feedbackOrder=[];
-let currentTrial=0, trialStart=null, timerInterval=null, results=[];
+let currentTrial=0, trialStart=null, countdownInterval=null, results=[];
+let timedOut = false;
 
 // ─── START ───────────────────────────────────────────────────────────────────
 function startExperiment() {
@@ -518,14 +784,11 @@ function startExperiment() {
     alert(`Question bank has only ${ALL_QUESTIONS.length} question(s). Need at least ${SET_SIZE}.`);
     return;
   }
-
-  // Shuffle and pick a random set of SET_SIZE questions
   const shuffled = shuffle(ALL_QUESTIONS);
   const numSets  = Math.floor(shuffled.length / SET_SIZE);
   assignedSetIndex = Math.floor(Math.random() * numSets);
   assignedSet = shuffled.slice(assignedSetIndex * SET_SIZE, (assignedSetIndex + 1) * SET_SIZE);
 
-  // Balanced feedback: for 3 questions → either [D,D,T] or [D,T,T], randomised
   feedbackOrder = shuffle(Math.random() < 0.5
     ? ['diagram','diagram','text']
     : ['diagram','text','text']);
@@ -536,6 +799,35 @@ function startExperiment() {
   loadTrial();
 }
 
+// ─── COUNTDOWN RING ──────────────────────────────────────────────────────────
+const RING_CIRCUMFERENCE = 2 * Math.PI * 33; // r=33 → ≈207.3
+
+function updateRing(secondsLeft) {
+  const fraction = secondsLeft / TRIAL_SECONDS;
+  const offset   = RING_CIRCUMFERENCE * (1 - fraction);
+  const fill     = document.getElementById('ring-fill');
+  const num      = document.getElementById('countdown-num');
+  const ring     = document.getElementById('countdown-ring');
+
+  fill.style.strokeDashoffset = offset;
+  num.textContent = Math.ceil(secondsLeft);
+
+  // Color transitions: green → yellow → red
+  if (fraction > 0.5) {
+    fill.style.stroke = '#10b981';
+    num.style.color   = '#f1f5f9';
+    ring.classList.remove('ring-urgent');
+  } else if (fraction > 0.25) {
+    fill.style.stroke = '#f59e0b';
+    num.style.color   = '#fbbf24';
+    ring.classList.remove('ring-urgent');
+  } else {
+    fill.style.stroke = '#ef4444';
+    num.style.color   = '#f87171';
+    ring.classList.add('ring-urgent');
+  }
+}
+
 // ─── TRIAL ───────────────────────────────────────────────────────────────────
 function loadTrial() {
   const p = assignedSet[currentTrial];
@@ -544,32 +836,52 @@ function loadTrial() {
   document.getElementById('problem-text').textContent  = p.text;
   document.getElementById('answer-input').value = '';
   document.getElementById('answer-input').focus();
-  clearInterval(timerInterval);
+
+  // Reset ring
+  timedOut = false;
+  updateRing(TRIAL_SECONDS);
+  clearInterval(countdownInterval);
+
   trialStart = Date.now();
-  timerInterval = setInterval(() => {
-    document.getElementById('timer-display').textContent =
-      `⏱ ${((Date.now()-trialStart)/1000).toFixed(1)}s`;
-  }, 100);
+  countdownInterval = setInterval(() => {
+    const elapsed     = (Date.now() - trialStart) / 1000;
+    const secondsLeft = Math.max(0, TRIAL_SECONDS - elapsed);
+    updateRing(secondsLeft);
+    if (secondsLeft <= 0) {
+      clearInterval(countdownInterval);
+      timedOut = true;
+      submitAnswer(true); // auto-submit
+    }
+  }, 50);
 }
 
-function submitAnswer() {
-  const elapsed = (Date.now()-trialStart)/1000;
-  clearInterval(timerInterval);
-  const raw = document.getElementById('answer-input').value.trim();
-  if (!raw) {
+function submitAnswer(autoSubmit = false) {
+  clearInterval(countdownInterval);
+  const elapsed = (Date.now() - trialStart) / 1000;
+  const raw     = document.getElementById('answer-input').value.trim();
+
+  // If manually submitting with no answer and not auto-submitting
+  if (!raw && !autoSubmit) {
     alert('Please enter an answer.');
-    trialStart = Date.now() - elapsed*1000;
-    timerInterval = setInterval(() => {
-      document.getElementById('timer-display').textContent =
-        `⏱ ${((Date.now()-trialStart)/1000).toFixed(1)}s`;
-    }, 100);
+    // Restart countdown from where we were (capped at TRIAL_SECONDS)
+    const remaining = Math.max(0, TRIAL_SECONDS - elapsed);
+    if (remaining > 0) {
+      const resumeStart = Date.now() - (TRIAL_SECONDS - remaining) * 1000;
+      trialStart = resumeStart;
+      countdownInterval = setInterval(() => {
+        const e2 = (Date.now() - trialStart) / 1000;
+        const sl = Math.max(0, TRIAL_SECONDS - e2);
+        updateRing(sl);
+        if (sl <= 0) { clearInterval(countdownInterval); timedOut = true; submitAnswer(true); }
+      }, 50);
+    }
     return;
   }
 
   const p         = assignedSet[currentTrial];
   const fType     = feedbackOrder[currentTrial];
   const userNorm  = raw.toLowerCase().trim();
-  const isCorrect = userNorm === p.answer;
+  const isCorrect = !!raw && userNorm === p.answer;
 
   const uNum = parseFloat(raw), cNum = parseFloat(p.answer);
   const absError = (!isNaN(uNum) && !isNaN(cNum)) ? Math.abs(uNum-cNum) : (isCorrect ? 0 : 1);
@@ -578,35 +890,46 @@ function submitAnswer() {
     trial: currentTrial+1,
     problemId: p.id,
     problemCategory: p.category,
-    userAnswer: raw,
+    userAnswer: raw || '(no answer)',
     correctAnswer: p.answer,
     isCorrect,
     absError,
     responseTime: elapsed,
     feedbackType: fType,
-    setIndex: assignedSetIndex
+    setIndex: assignedSetIndex,
+    timedOut: autoSubmit,
   });
 
-  showFeedback(p, fType, isCorrect, raw, elapsed);
+  showFeedback(p, fType, isCorrect, raw || '(no answer)', elapsed, autoSubmit);
 }
 
 // ─── FEEDBACK ────────────────────────────────────────────────────────────────
-function showFeedback(p, fType, isCorrect, userAnswer, elapsed) {
+function showFeedback(p, fType, isCorrect, userAnswer, elapsed, wasTimeout) {
   document.getElementById('feedback-badge').innerHTML = fType === 'diagram'
     ? `<span class="feedback-badge badge-diagram">📊 Diagram Feedback — Trial ${currentTrial+1} of ${SET_SIZE}</span>`
     : `<span class="feedback-badge badge-text">📝 Text Feedback — Trial ${currentTrial+1} of ${SET_SIZE}</span>`;
 
-  document.getElementById('result-banner').innerHTML = isCorrect
-    ? `<div class="result-banner banner-correct">
-         <div class="banner-icon">✅</div>
-         <div><div class="banner-title">Correct!</div>
-              <div class="banner-sub">Response time: ${elapsed.toFixed(2)}s</div></div>
-       </div>`
-    : `<div class="result-banner banner-wrong">
-         <div class="banner-icon">❌</div>
-         <div><div class="banner-title">Incorrect — your answer: ${userAnswer} | correct: ${p.answer}</div>
-              <div class="banner-sub">Response time: ${elapsed.toFixed(2)}s</div></div>
-       </div>`;
+  let bannerClass, bannerIcon, bannerTitle, bannerSub;
+  if (wasTimeout && !isCorrect) {
+    bannerClass = 'banner-timeout'; bannerIcon = '⏰';
+    bannerTitle = `Time's up! — Correct answer: ${p.answer}`;
+    bannerSub   = `You answered: ${userAnswer} · Response time: ${elapsed.toFixed(2)}s`;
+  } else if (isCorrect) {
+    bannerClass = 'banner-correct'; bannerIcon = '✅';
+    bannerTitle = 'Correct!';
+    bannerSub   = `Response time: ${elapsed.toFixed(2)}s`;
+  } else {
+    bannerClass = 'banner-wrong'; bannerIcon = '❌';
+    bannerTitle = `Incorrect — your answer: ${userAnswer} | correct: ${p.answer}`;
+    bannerSub   = `Response time: ${elapsed.toFixed(2)}s`;
+  }
+
+  document.getElementById('result-banner').innerHTML =
+    `<div class="result-banner ${bannerClass}">
+       <div class="banner-icon">${bannerIcon}</div>
+       <div><div class="banner-title">${bannerTitle}</div>
+            <div class="banner-sub">${bannerSub}</div></div>
+     </div>`;
 
   document.getElementById('feedback-content').innerHTML = fType === 'diagram'
     ? buildDiagram(p.diagramType) + `<div class="explanation-box">${p.textFeedback}</div>`
@@ -630,19 +953,20 @@ function showResults() {
   const correct = results.filter(r=>r.isCorrect).length;
   const avgTime = (results.reduce((s,r)=>s+r.responseTime,0)/results.length).toFixed(2);
   document.getElementById('res-correct').textContent  = correct;
-  document.getElementById('res-avg-time').textContent = avgTime+'s';
+  document.getElementById('res-avg-time').textContent = avgTime + 's';
   document.getElementById('res-set').textContent      = `Set ${assignedSetIndex+1}`;
   document.getElementById('res-pid').textContent      = pid;
   document.getElementById('results-tbody').innerHTML  = results.map(r=>`<tr>
     <td>${r.trial}</td>
     <td>${r.problemId}</td>
-    <td>${r.userAnswer}</td>
+    <td>${r.isCorrect ? `<span class="cell-correct">${r.userAnswer}</span>` : `<span class="cell-wrong">${r.userAnswer}</span>`}</td>
     <td>${r.correctAnswer}</td>
     <td>${r.responseTime.toFixed(2)}</td>
     <td><span class="pill ${r.feedbackType==='diagram'?'pill-diagram':'pill-text'}">${r.feedbackType}</span></td>
     <td class="${r.isCorrect?'cell-correct':'cell-wrong'}">${r.absError}</td>
   </tr>`).join('');
   showScreen('screen-results');
+  renderPercentile(correct, avgTime);
   saveToGoogleSheets();
 }
 
@@ -671,12 +995,12 @@ async function saveToGoogleSheets() {
 
 function exportCSV() {
   const hdr = ['Timestamp','ParticipantID','SetIndex','Trial','ProblemID','Category',
-               'UserAnswer','CorrectAnswer','IsCorrect','AbsError','ResponseTime_s','FeedbackType'];
+               'UserAnswer','CorrectAnswer','IsCorrect','AbsError','ResponseTime_s','FeedbackType','TimedOut'];
   const ts  = new Date().toISOString();
   const rows = results.map(r=>[
     ts, pid, r.setIndex, r.trial, r.problemId, r.problemCategory,
     r.userAnswer, r.correctAnswer, r.isCorrect?1:0,
-    r.absError, r.responseTime.toFixed(3), r.feedbackType
+    r.absError, r.responseTime.toFixed(3), r.feedbackType, r.timedOut?1:0
   ]);
   const csv = [hdr,...rows].map(r=>r.join(',')).join('\n');
   const a   = document.createElement('a');
