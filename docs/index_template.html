@@ -368,12 +368,12 @@
     <p>We're studying how different types of feedback affect problem-solving. You'll solve <strong style="color:#e2e8f0">3 math word problems</strong> and receive feedback after each one.</p>
     <div class="info-grid">
       <div class="info-box"><div class="ico">🧩</div><div class="val">3</div><div class="lbl">Problems / Session</div></div>
-      <div class="info-box"><div class="ico">⚡</div><div class="val">3 sec</div><div class="lbl">Per Question</div></div>
+      <div class="info-box"><div class="ico">⚡</div><div class="val">10 sec</div><div class="lbl">Per Question</div></div>
       <div class="info-box"><div class="ico">🔒</div><div class="val">Anonymous</div><div class="lbl">Data Collection</div></div>
     </div>
     <p>Please complete this <strong style="color:#e2e8f0">independently</strong> without any external help. Your answers and response times are recorded for research purposes only.</p>
     <p style="color:#f59e0b;font-size:0.85rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 14px;margin-bottom:16px">
-      ⚡ <strong style="color:#fbbf24">Important:</strong> Each question has a strict <strong style="color:#fbbf24">3-second timer</strong>. Answer as quickly as you can — the question will auto-submit when time runs out.
+      ⚡ <strong style="color:#fbbf24">Important:</strong> Each question has a strict <strong style="color:#fbbf24">10‑second timer</strong>. Answer as quickly as you can — the question will auto-submit when time runs out.
     </p>
     <div class="divider"></div>
     <label>Participant ID <span style="font-weight:400;color:#4b5563;">(e.g. your student number)</span></label>
@@ -399,7 +399,7 @@
             <circle class="ring-bg"   cx="36" cy="36" r="33"/>
             <circle class="ring-fill" cx="36" cy="36" r="33" id="ring-fill"/>
           </svg>
-          <div class="countdown-num" id="countdown-num">3</div>
+          <div class="countdown-num" id="countdown-num">10</div>
         </div>
         <div class="countdown-lbl">seconds</div>
       </div>
@@ -471,7 +471,7 @@ const ALL_QUESTIONS = [];
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgzwjpeOfL2lYmaRYOGBWWFdRVTGCRidBJGv8cRvQtz70sNqpWaq0Tcf0U3WqYfHQ/exec";
 const SET_SIZE      = 3;
-const TRIAL_SECONDS = 3;  // ← countdown per question
+const TRIAL_SECONDS = 10;  // ← countdown per question
 
 // ─── DIAGRAM BUILDERS ────────────────────────────────────────────────────────
 function buildDiagram(type) {
