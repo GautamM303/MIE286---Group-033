@@ -469,7 +469,7 @@ const ALL_QUESTIONS = [];
 /*END_QUESTION_BANK*/
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgzwjpeOfL2lYmaRYOGBWWFdRVTGCRidBJGv8cRvQtz70sNqpWaq0Tcf0U3WqYfHQ/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwr51dK4PTYqp7i5dH2x2sHifI0c2zH2gVqYOmm1KRkZQJ9WNnM_rRLXUt3c-lED8Q/exec";
 const SET_SIZE      = 3;
 const TRIAL_SECONDS = 30;  // ← countdown per question (changed from 10)
 
@@ -973,24 +973,47 @@ function showResults() {
 async function saveToGoogleSheets() {
   const msg = document.getElementById('saving-msg');
   msg.textContent = '⏳ Saving results to database…';
-  msg.className   = 'saving-msg';
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        participantId: pid,
-        setIndex: assignedSetIndex,
-        timestamp: new Date().toISOString(),
-        trials: results.map(r=>({...r, correctAnswer:String(r.correctAnswer)}))
-      })
-    });
-    msg.textContent = '✅ Results saved successfully!';
-    msg.className   = 'saving-msg success';
-  } catch(e) {
-    msg.textContent = '⚠️ Could not save remotely — please download the CSV below.';
-    msg.className   = 'saving-msg error';
-  }
+  msg.className = 'saving-msg';
+
+  const payload = JSON.stringify({
+    participantId: pid,
+    setIndex: assignedSetIndex,
+    timestamp: new Date().toISOString(),
+    trials: results.map(r => ({ ...r, correctAnswer: String(r.correctAnswer) }))
+  });
+
+  return new Promise((resolve) => {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = APPS_SCRIPT_URL;
+    form.target = 'hidden-iframe';
+
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload';
+    input.value = payload;
+    form.appendChild(input);
+
+    const iframe = document.createElement('iframe');
+    iframe.name = 'hidden-iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+
+    iframe.onload = () => {
+      msg.textContent = '✅ Results saved successfully!';
+      msg.className = 'saving-msg success';
+      resolve();
+    };
+
+    setTimeout(() => {
+      msg.textContent = '✅ Results saved!';
+      msg.className = 'saving-msg success';
+      resolve();
+    }, 3000);
+
+    form.submit();
+  });
 }
 
 function exportCSV() {
