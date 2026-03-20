@@ -1051,38 +1051,20 @@ async function saveToGoogleSheets() {
     trials: results.map(r => ({ ...r, correctAnswer: String(r.correctAnswer) }))
   });
 
-  return new Promise((resolve) => {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = APPS_SCRIPT_URL;
-    form.target = 'hidden-iframe';
-
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'payload';
-    input.value = payload;
-    form.appendChild(input);
-
-    const iframe = document.createElement('iframe');
-    iframe.name = 'hidden-iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-
-    iframe.onload = () => {
-      msg.textContent = '✅ Results saved successfully!';
-      msg.className = 'saving-msg success';
-      resolve();
-    };
-
-    setTimeout(() => {
-      msg.textContent = '✅ Results saved!';
-      msg.className = 'saving-msg success';
-      resolve();
-    }, 3000);
-
-    form.submit();
-  });
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',   // required for Apps Script — avoids CORS error
+      headers: { 'Content-Type': 'text/plain' },
+      body: payload
+    });
+    msg.textContent = '✅ Results saved successfully!';
+    msg.className = 'saving-msg success';
+  } catch (err) {
+    msg.textContent = '❌ Save failed — please download CSV instead.';
+    msg.className = 'saving-msg error';
+    console.error('Save error:', err);
+  }
 }
 
 function exportCSV() {
