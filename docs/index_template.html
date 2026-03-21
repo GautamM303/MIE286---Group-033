@@ -1001,9 +1001,9 @@ function showFeedback(p, fType, isCorrect, userAnswer, elapsed, wasTimeout) {
      </div>`;
 
   document.getElementById('feedback-content').innerHTML = fType === 'diagram'
-    ? buildDiagram(p.diagramType) + `<div class="explanation-box">${p.textFeedback}</div>`
+    ? buildDiagram(p.diagramType)
     : `<div class="explanation-box"><strong>📝 Explanation:</strong><br><br>${p.textFeedback}</div>`;
-
+    
   showScreen('screen-feedback');
 }
 
